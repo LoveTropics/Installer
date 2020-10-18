@@ -1,0 +1,38 @@
+<synth>
+	<object id="roboto16"
+		class="com.lovetropics.installer.CustomFonts" method="createFont">
+		<string>/Roboto-Regular.ttf</string>
+		<int>16</int>
+	</object>
+	<style id="basicStyle">
+		<font idref="roboto16" />
+		<state>
+			<color value="#242c5a" type="BACKGROUND" />
+			<color value="WHITE" type="FOREGROUND" />
+		</state>
+	</style>
+	<style id="button">
+		<opaque value="true" />
+		<state>
+			<color type="TEXT_FOREGROUND" value="BLACK" />
+			<color type="BACKGROUND" value="#F88379" />
+		</state>
+	</style>
+	<style id="closeButton">
+		<opaque value="true" />
+		<insets top="8" left="8" right="8" bottom="8" />
+		<state>
+			<imagePainter method="buttonBackground"
+				path="/times-solid.png" sourceInsets="0 0 0 0" />
+			<color type="BACKGROUND" value="#242C5A" />
+		</state>
+		<state value="MOUSE_OVER">
+			<imagePainter method="buttonBackground"
+				path="/times-solid.png" sourceInsets="0 0 0 0" />
+			<color type="BACKGROUND" value="#2F52A4" />
+		</state>
+	</style>
+	<bind style="basicStyle" type="region" key=".*" />
+	<bind style="button" type="region" key="Button" />
+	<bind style="closeButton" type="name" key="Close" />
+</synth>
