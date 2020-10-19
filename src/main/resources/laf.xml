@@ -1,6 +1,6 @@
 <synth>
 	<object id="roboto16"
-		class="com.lovetropics.installer.CustomFonts" method="createFont">
+		class="com.lovetropics.installer.ui.util.CustomFonts" method="createFont">
 		<string>/Roboto-Regular.ttf</string>
 		<int>16</int>
 	</object>

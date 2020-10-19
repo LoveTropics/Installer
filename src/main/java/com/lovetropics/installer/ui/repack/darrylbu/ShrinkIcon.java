@@ -1,4 +1,4 @@
-package com.lovetropics.installer.ui.darrylbu;
+package com.lovetropics.installer.ui.repack.darrylbu;
 
 import java.awt.Component;
 import java.awt.Container;

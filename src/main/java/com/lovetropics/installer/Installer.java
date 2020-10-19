@@ -1,59 +1,61 @@
 package com.lovetropics.installer;
 
-import java.awt.BorderLayout;
-import java.awt.EventQueue;
+import java.util.Random;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Future;
 
-import javax.swing.JFrame;
-import javax.swing.UIManager;
-import javax.swing.plaf.synth.SynthLookAndFeel;
+import com.beust.jcommander.JCommander;
+import com.beust.jcommander.Parameter;
+import com.lovetropics.installer.steps.InstallStep;
+import com.lovetropics.installer.ui.InstallerGui;
 
-import com.lovetropics.installer.ui.ContentPane;
-import com.lovetropics.installer.ui.TitlePane;
+public class Installer {
 
-public class Installer extends JFrame {
+    private static class Arguments {
 
-    private static final long serialVersionUID = 423454770460261455L;
+        @Parameter(names = { "--config" }, description = "Provide an alternate path to a config file, defaults to installer.json")
+        private String config = "installer.json";
+    }
 
-    public static void main(String[] args) {        
-        try {
-            // Try to load our synth look and feel from XML
-            SynthLookAndFeel laf = new SynthLookAndFeel();
-            laf.load(Installer.class.getResourceAsStream("/laf.xml"), Installer.class);
-            UIManager.setLookAndFeel(laf);
-        } catch (Exception e) {
-            // If that fails, attempt to use the system look and feel as a fallback
-            e.printStackTrace();
-            try {
-                UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-            } catch (Exception e1) {
-                e1.printStackTrace();
+    public static void main(String[] argv) {
+        Arguments args = new Arguments();
+        JCommander.newBuilder().addObject(args).build().parse(argv);
+
+        InstallProcess process = new InstallProcess().then(new InstallStep() {
+
+            int progress;
+
+            @Override
+            public Future<Void> start(ProgressCallback callback) {
+                return CompletableFuture.runAsync(() -> {
+                    while (progress < getMaxProgress()) {
+                        try {
+                            Thread.sleep(new Random().nextInt(500) + 500);
+                            if (new Random().nextInt(4) == 0) {
+                                callback.push("Doing a Smaller Thing");
+                                Thread.sleep(1000);
+                                callback.pop();
+                            }
+                            progress++;
+                            callback.addProgress(1);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
             }
-        }
 
-        EventQueue.invokeLater(() -> {
-            try {
-                Installer installer = new Installer();
-                installer.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-                // TODO choose a different size?
-                installer.setSize(400, 400);
-                // Centers the window on the monitor
-                installer.setLocationRelativeTo(null);
-                // Remove OS window decorations
-                installer.setUndecorated(true);
-                // Show the window
-                installer.setVisible(true);
-            } catch(Exception e) {
-                e.printStackTrace();
+            @Override
+            public String getName() {
+                return "Doing Things";
+            }
+
+            @Override
+            public int getMaxProgress() {
+                return 20;
             }
         });
-    }
-    
-    public Installer() {
-        getContentPane().setLayout(new BorderLayout());
 
-        getContentPane().add(new TitlePane(this), BorderLayout.NORTH);
-        // You might think SOUTH would make more sense, but this squishes the entire pane into the bottom half of the window
-        // CENTER gets the behavior we want (thin title pane at the top, the rest content)
-        getContentPane().add(new ContentPane(), BorderLayout.CENTER);
+        InstallerGui.create(process::run);
     }
 }

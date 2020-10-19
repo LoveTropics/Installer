@@ -1,4 +1,4 @@
-package com.lovetropics.installer.ui;
+package com.lovetropics.installer.ui.pane;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -8,14 +8,14 @@ import java.awt.event.MouseMotionListener;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
-import com.lovetropics.installer.Installer;
+import com.lovetropics.installer.ui.component.CloseButton;
 
 public class TitlePane extends JPanel implements MouseMotionListener {
 
     private final JFrame root;
     int posX = 0, posY = 0;
 
-    public TitlePane(Installer root) {
+    public TitlePane(JFrame root) {
         this.root = root;
 
         setLayout(new GridBagLayout());
