@@ -48,19 +48,19 @@ public class ProgressPanel extends JPanel implements ProgressCallback {
     }
 
     @Override
-    public void push(String step, int maxProgress) {
+    public synchronized void push(String step, int maxProgress) {
         stack.push(new Step(step, maxProgress));
         updateText();
     }
 
     @Override
-    public void pop() {
+    public synchronized void pop() {
         stack.pop();
         updateText();
     }
 
     @Override
-    public void addProgress(int amount) {
+    public synchronized void addProgress(int amount) {
         stack.peek().progress += amount;
         updateText();
     }

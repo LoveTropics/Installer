@@ -2,6 +2,7 @@ package com.lovetropics.installer;
 
 import java.util.Random;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
 import com.beust.jcommander.JCommander;
@@ -23,12 +24,14 @@ public class Installer {
 
         InstallProcess process = new InstallProcess().then(new InstallStep() {
 
+            Future<Void> task;
             int progress;
+            boolean canceled;
 
             @Override
             public Future<Void> start(ProgressCallback callback) {
-                return CompletableFuture.runAsync(() -> {
-                    while (progress < getMaxProgress()) {
+                task = CompletableFuture.runAsync(() -> {
+                    while (!canceled && progress < getMaxProgress()) {
                         try {
                             Thread.sleep(new Random().nextInt(500) + 500);
                             if (new Random().nextInt(4) == 0) {
@@ -43,6 +46,7 @@ public class Installer {
                         }
                     }
                 });
+                return task;
             }
 
             @Override
@@ -54,8 +58,18 @@ public class Installer {
             public int getMaxProgress() {
                 return 20;
             }
+
+            @Override
+            public void cancel() {
+                this.canceled = true;
+                try {
+                    task.get();
+                } catch (InterruptedException | ExecutionException e) {
+                    e.printStackTrace();
+                }
+            }
         });
 
-        InstallerGui.create(process::run);
+        InstallerGui.create(process);
     }
 }

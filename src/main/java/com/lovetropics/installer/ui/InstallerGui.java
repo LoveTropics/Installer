@@ -2,20 +2,23 @@ package com.lovetropics.installer.ui;
 
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
-import java.util.function.Consumer;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Future;
 
 import javax.swing.JFrame;
 import javax.swing.UIManager;
 import javax.swing.plaf.synth.SynthLookAndFeel;
 
+import com.lovetropics.installer.InstallProcess;
 import com.lovetropics.installer.Installer;
-import com.lovetropics.installer.ProgressCallback;
 import com.lovetropics.installer.ui.pane.ContentPane;
 import com.lovetropics.installer.ui.pane.TitlePane;
 
 public class InstallerGui extends JFrame {
 
-    public static InstallerGui create(Consumer<ProgressCallback> task) {
+    public static InstallerGui create(InstallProcess task) {
         try {
             // Try to load our synth look and feel from XML
             SynthLookAndFeel laf = new SynthLookAndFeel();
@@ -34,7 +37,7 @@ public class InstallerGui extends JFrame {
         final InstallerGui gui = new InstallerGui(task);
         EventQueue.invokeLater(() -> {
             try {
-                gui.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                gui.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
                 // TODO choose a different size?
                 gui.setSize(400, 400);
                 // Centers the window on the monitor
@@ -50,12 +53,34 @@ public class InstallerGui extends JFrame {
         return gui;
     }
 
-    public InstallerGui(Consumer<ProgressCallback> task) {
+    public InstallerGui(InstallProcess task) {
         getContentPane().setLayout(new BorderLayout());
 
         getContentPane().add(new TitlePane(this), BorderLayout.NORTH);
         // You might think SOUTH would make more sense, but this squishes the entire pane into the bottom half of the window
         // CENTER gets the behavior we want (thin title pane at the top, the rest content)
-        getContentPane().add(new ContentPane(task), BorderLayout.CENTER);
+        final ContentPane content = new ContentPane(task::run);
+        getContentPane().add(content, BorderLayout.CENTER);
+        
+        addWindowListener(new WindowAdapter() {
+            
+            Future<Void> closeTask;
+            
+            @Override
+            public void windowClosing(WindowEvent e) {
+                if (closeTask != null) return;
+                content.setActionString("Canceling...");
+                closeTask = CompletableFuture.runAsync(task::cancel)
+                    .thenRun(() -> {
+                        content.getProgressCallback().push("Canceled!");
+                        try {
+                            Thread.sleep(1000);
+                        } catch (InterruptedException e1) {
+                            e1.printStackTrace();
+                        }
+                    })
+                    .thenRun(() -> System.exit(0));
+            }
+        });
     }
 }

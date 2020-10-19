@@ -11,4 +11,6 @@ public interface InstallStep {
     String getName();
 
     int getMaxProgress();
+
+    void cancel();
 }

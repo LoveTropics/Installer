@@ -17,6 +17,7 @@ import net.miginfocom.swing.MigLayout;
 
 public class ContentPane extends JPanel {
 
+    private final JButton btnInstall;
     private final ProgressPanel progress;
     private Future<Void> future;
 
@@ -24,7 +25,7 @@ public class ContentPane extends JPanel {
         // Just use WindowBuilder for UI design, please
         setLayout(new MigLayout("", "[grow][grow][60.00][100.00][60.00][grow][grow]", "[][120.00,grow][53.00][20:40:40,grow][20px:20px,grow][60px:n][20px:n,grow]"));
 
-        JButton btnInstall = new JButton("Install");
+        btnInstall = new JButton("Install");
         btnInstall.setOpaque(true);
         add(btnInstall, "cell 3 3,grow");
 
@@ -48,5 +49,9 @@ public class ContentPane extends JPanel {
 
     public ProgressCallback getProgressCallback() {
         return progress;
+    }
+
+    public void setActionString(String string) {
+        btnInstall.setText(string);
     }
 }

@@ -9,6 +9,8 @@ import com.lovetropics.installer.steps.InstallStep;
 public class InstallProcess {
 
     private final Deque<InstallStep> steps = new ArrayDeque<>();
+    private InstallStep currentStep;
+    private boolean canceled;
 
     public InstallProcess then(InstallStep step) {
         steps.add(step);
@@ -16,13 +18,31 @@ public class InstallProcess {
     }
 
     public void run(ProgressCallback callback) {
-        while (!steps.isEmpty()) {
-            InstallStep step = steps.remove();
+        while (!canceled && !steps.isEmpty()) {
             try {
-                callback.push(step.getName(), step.getMaxProgress());
-                step.start(callback).get();
+                currentStep = steps.remove();
+                callback.push(currentStep.getName(), currentStep.getMaxProgress());
+                currentStep.start(callback).get();
+                callback.pop();
             } catch (InterruptedException | ExecutionException e) {
                 throw new RuntimeException(e);
+            } finally {
+                currentStep = null;
+            }
+        }
+        steps.clear();
+    }
+
+    public void cancel() {
+        canceled = true;
+        if (currentStep != null) {
+            currentStep.cancel();
+        }
+        while (!steps.isEmpty()) {
+            try {
+                Thread.sleep(50);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
         }
     }
