@@ -37,7 +37,12 @@ public class ProgressPanel extends JPanel implements ProgressCallback {
         for (Step step : (Iterable<Step>) stack::descendingIterator) {
             StringBuilder text = new StringBuilder().append(step.name);
             if (step.maxProgress > 0) {
-                text.append(": ").append(step.progress).append(" / ").append(step.maxProgress);
+                text.append(": ").append(step.progress);
+                if (step.maxProgress == 100) {
+                    text.append("%");
+                } else {
+                    text.append(" / ").append(step.maxProgress);
+                }
             }
             System.out.println(text);
             add(new JLabel(text.toString(), SwingConstants.CENTER));

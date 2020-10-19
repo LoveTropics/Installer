@@ -52,7 +52,7 @@ public class ForgeInstallerStep implements InstallStep {
 
         @Override
         public void progress(double progress) {
-            callback.setProgress((int) progress * 100);
+            callback.setProgress((int) (progress * 100));
         }
 
         @Override
@@ -64,6 +64,7 @@ public class ForgeInstallerStep implements InstallStep {
 
         @Override
         public void message(String message, MessagePriority priority) {
+            if (priority == MessagePriority.LOW || message.startsWith("=")) return;
             if (hasSubMessage) {
                 callback.pop();
             }
