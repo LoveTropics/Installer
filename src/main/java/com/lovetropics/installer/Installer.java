@@ -5,24 +5,18 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
-import com.beust.jcommander.JCommander;
-import com.beust.jcommander.Parameter;
+import com.lovetropics.installer.config.InstallerConfig;
+import com.lovetropics.installer.steps.ForgeInstallerStep;
 import com.lovetropics.installer.steps.InstallStep;
 import com.lovetropics.installer.ui.InstallerGui;
 
 public class Installer {
 
-    private static class Arguments {
+    public static void run(InstallerConfig config) {
 
-        @Parameter(names = { "--config" }, description = "Provide an alternate path to a config file, defaults to installer.json")
-        private String config = "installer.json";
-    }
-
-    public static void main(String[] argv) {
-        Arguments args = new Arguments();
-        JCommander.newBuilder().addObject(args).build().parse(argv);
-
-        InstallProcess process = new InstallProcess().then(new InstallStep() {
+        InstallProcess process = new InstallProcess()
+                .then(new ForgeInstallerStep())
+                .then(new InstallStep() {
 
             Future<Void> task;
             int progress;

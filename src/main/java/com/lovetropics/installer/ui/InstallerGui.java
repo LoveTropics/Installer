@@ -39,7 +39,7 @@ public class InstallerGui extends JFrame {
             try {
                 gui.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
                 // TODO choose a different size?
-                gui.setSize(400, 400);
+                gui.setSize(800, 800);
                 // Centers the window on the monitor
                 gui.setLocationRelativeTo(null);
                 // Remove OS window decorations
@@ -70,6 +70,9 @@ public class InstallerGui extends JFrame {
             public void windowClosing(WindowEvent e) {
                 if (closeTask != null) return;
                 content.setActionString("Canceling...");
+                if (!task.running()) {
+                    System.exit(0);
+                }
                 closeTask = CompletableFuture.runAsync(task::cancel)
                     .thenRun(() -> {
                         content.getProgressCallback().push("Canceled!");

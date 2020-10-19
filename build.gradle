@@ -40,10 +40,16 @@ jar.manifest {
 
 repositories {
     mavenCentral()
+    maven {
+        url 'https://files.minecraftforge.net/maven/'
+    }
 }
 
 dependencies {
     implementation 'com.miglayout:miglayout-swing:5.2'
 	implementation 'com.jidesoft:jide-oss:3.6.18'
     implementation "com.beust:jcommander:1.72"
+    implementation 'com.google.code.gson:gson:2.8.6'
+
+    compileOnly 'net.minecraftforge:forge:1.15.2-31.2.45:installer'
 }

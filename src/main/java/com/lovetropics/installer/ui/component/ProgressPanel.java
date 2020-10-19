@@ -64,4 +64,10 @@ public class ProgressPanel extends JPanel implements ProgressCallback {
         stack.peek().progress += amount;
         updateText();
     }
+
+    @Override
+    public void setProgress(int amount) {
+        stack.peek().progress = amount;
+        updateText();
+    }
 }

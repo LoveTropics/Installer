@@ -34,7 +34,7 @@ public class ContentPane extends JPanel {
         add(logo, "cell 1 1 5 1,grow");
 
         progress = new ProgressPanel();
-        add(progress, "cell 1 5 5 1,growx");
+        add(progress, "cell 1 5 5 1,growx,aligny top");
 
         btnInstall.addActionListener(e -> {
             if (future == null) {

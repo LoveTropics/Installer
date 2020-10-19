@@ -35,8 +35,11 @@ public class InstallProcess {
 
     public void cancel() {
         canceled = true;
-        if (currentStep != null) {
+        if (running()) {
             currentStep.cancel();
+        } else {
+            // Not started yet, nothing to cancel
+            return;
         }
         while (!steps.isEmpty()) {
             try {
@@ -45,5 +48,9 @@ public class InstallProcess {
                 e.printStackTrace();
             }
         }
+    }
+
+    public boolean running() {
+        return currentStep != null;
     }
 }

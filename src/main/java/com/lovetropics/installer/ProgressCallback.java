@@ -3,7 +3,6 @@ package com.lovetropics.installer;
 public interface ProgressCallback {
 
     default void push(String step) {
-        System.out.println("Pushing");
         push(step, 0);
     }
 
@@ -25,4 +24,6 @@ public interface ProgressCallback {
     }
 
     void addProgress(int amount);
+
+    void setProgress(int amount);
 }
