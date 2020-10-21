@@ -45,6 +45,9 @@ public class LaunchWrapper {
             Installer.run(config);
             return;
         }
+        if (config.forgeInstallerPath == null) {
+            throw new IllegalArgumentException("Missing forgeInstallerPath config");
+        }
 
         String classpath = System.getProperty("java.class.path");
         classpath += ";" + config.forgeInstallerPath;
