@@ -6,23 +6,33 @@ import java.util.concurrent.ExecutionException;
 
 import com.lovetropics.installer.steps.InstallStep;
 
-public class InstallProcess {
+public class InstallProcess<T> {
+    
+    public static InstallProcess<Void> create() {
+        return new InstallProcess<>();
+    }
 
-    private final Deque<InstallStep> steps = new ArrayDeque<>();
+    private final Deque<InstallStep<?, ?>> steps = new ArrayDeque<>();
+    @SuppressWarnings("rawtypes")
     private InstallStep currentStep;
     private boolean canceled;
 
-    public InstallProcess then(InstallStep step) {
+    private InstallProcess() {}
+
+    @SuppressWarnings("unchecked")
+    public <R> InstallProcess<R> then(InstallStep<T, R> step) {
         steps.add(step);
-        return this;
+        return (InstallProcess<R>) this;
     }
 
+    @SuppressWarnings("unchecked")
     public void run(ProgressCallback callback) {
+        Object result = null;
         while (!canceled && !steps.isEmpty()) {
             try {
                 currentStep = steps.remove();
                 callback.push(currentStep.getName(), currentStep.getMaxProgress());
-                currentStep.start(callback).get();
+                result = currentStep.start(result, callback).get();
                 callback.pop();
             } catch (InterruptedException | ExecutionException e) {
                 throw new RuntimeException(e);

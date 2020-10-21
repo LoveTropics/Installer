@@ -1,29 +1,39 @@
 package com.lovetropics.installer;
 
-import java.util.Random;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
+import java.io.File;
 
 import com.lovetropics.installer.config.InstallerConfig;
 import com.lovetropics.installer.steps.ForgeInstallerStep;
-import com.lovetropics.installer.steps.InstallStep;
+import com.lovetropics.installer.steps.LauncherStep;
+import com.lovetropics.installer.steps.RunLauncherStep;
 import com.lovetropics.installer.ui.InstallerGui;
+import com.lovetropics.installer.ui.UIConfig;
+import com.lovetropics.installer.ui.UIElement;
 
 public class Installer {
 
     public static void run(InstallerConfig config) {
 
-        InstallProcess process = new InstallProcess()
+        final UIConfig gameDir = new UIConfig("LoveTropics2020") {
+
+            @Override
+            public synchronized String get() {
+                return new File(super.get()).getAbsolutePath();
+            }
+        };
+
+        InstallProcess<?> process = InstallProcess.create()
                 .then(new ForgeInstallerStep())
-                .then(new InstallStep() {
+                .then(new LauncherStep(config.profileName, gameDir))
+                .then(new RunLauncherStep());/*
+                .then(new InstallStep<Void, Void>() {
 
             Future<Void> task;
             int progress;
             boolean canceled;
 
             @Override
-            public Future<Void> start(ProgressCallback callback) {
+            public Future<Void> start(Void in, ProgressCallback callback) {
                 task = CompletableFuture.runAsync(() -> {
                     while (!canceled && progress < getMaxProgress()) {
                         try {
@@ -63,7 +73,8 @@ public class Installer {
                 }
             }
         });
-
-        InstallerGui.create(process);
+*/
+        InstallerGui.create(process)
+            .bind(UIElement.GAME_DIR, gameDir);
     }
 }

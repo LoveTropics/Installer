@@ -4,6 +4,11 @@
 		<string>/Roboto-Regular.ttf</string>
 		<int>16</int>
 	</object>
+	<object id="roboto12"
+		class="com.lovetropics.installer.ui.util.CustomFonts" method="createFont">
+		<string>/Roboto-Regular.ttf</string>
+		<int>12</int>
+	</object>
 	<style id="basicStyle">
 		<font idref="roboto16" />
 		<state>
@@ -13,6 +18,7 @@
 	</style>
 	<style id="button">
 		<opaque value="true" />
+		<insets top="8" left="8" right="8" bottom="8" />
 		<state>
 			<color type="TEXT_FOREGROUND" value="BLACK" />
 			<color type="BACKGROUND" value="#F88379" />
@@ -32,7 +38,17 @@
 			<color type="BACKGROUND" value="#2F52A4" />
 		</state>
 	</style>
+	<style id="textField">
+		<opaque value="true" />
+		<font idref="roboto12" />
+		<insets top="4" left="2" right="2" bottom="1" />
+		<state>
+			<color type="BACKGROUND" value="WHITE" />
+			<color type="TEXT_FOREGROUND" value="BLACK" />
+		</state>
+	</style>
 	<bind style="basicStyle" type="region" key=".*" />
 	<bind style="button" type="region" key="Button" />
 	<bind style="closeButton" type="name" key="Close" />
+	<bind style="textField" type="region" key="TextField" />
 </synth>

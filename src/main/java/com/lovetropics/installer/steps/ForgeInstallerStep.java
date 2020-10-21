@@ -1,12 +1,11 @@
 package com.lovetropics.installer.steps;
 
 import java.io.File;
-import java.util.Locale;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
 import com.lovetropics.installer.ProgressCallback;
+import com.lovetropics.installer.util.MinecraftInstallationUtils;
 
 import net.minecraftforge.installer.actions.Action;
 import net.minecraftforge.installer.actions.ActionCanceledException;
@@ -14,7 +13,7 @@ import net.minecraftforge.installer.actions.Actions;
 import net.minecraftforge.installer.json.Install;
 import net.minecraftforge.installer.json.Util;
 
-public class ForgeInstallerStep implements InstallStep {
+public class ForgeInstallerStep extends SingleTaskStep<Void, Install> {
 
     private static class ForgeProgressCallbackAdapter implements net.minecraftforge.installer.actions.ProgressCallback {
 
@@ -72,57 +71,28 @@ public class ForgeInstallerStep implements InstallStep {
             hasSubMessage = true;
         }
     }
-
-    private Future<Void> task;
-
+    
     @Override
-    public Future<Void> start(ProgressCallback callback) {
-        task = CompletableFuture.runAsync(() -> {
+    public Future<Install> startTask(Void in, ProgressCallback callback) {
+        return CompletableFuture.supplyAsync(() -> {
             try {
                 System.out.println(new File("").getAbsolutePath());
                 Install profile = Util.loadInstallProfile();
                 Action action = Actions.CLIENT.getAction(profile, new ForgeProgressCallbackAdapter(callback));
-                if (!action.run(getMCDir(), $ -> true)) {
+                if (!action.run(MinecraftInstallationUtils.getMCDir(), $ -> true)) {
                     throw new RuntimeException("Failed to install forge");
                 }
+                return profile;
             } catch (ActionCanceledException e) {
                 e.printStackTrace();
+                throw new RuntimeException(e);
             } finally {
                 callback.pop();
             }
         });
-        return task;
-    }
-
-    private static File getMCDir() {
-        String userHomeDir = System.getProperty("user.home", ".");
-        String osType = System.getProperty("os.name").toLowerCase(Locale.ENGLISH);
-        String mcDir = ".minecraft";
-        if (osType.contains("win") && System.getenv("APPDATA") != null)
-            return new File(System.getenv("APPDATA"), mcDir);
-        else if (osType.contains("mac"))
-            return new File(new File(new File(userHomeDir, "Library"), "Application Support"), "minecraft");
-        return new File(userHomeDir, mcDir);
     }
 
     @Override
     public String getName() {
         return "Installing Forge";
-    }
-
-    @Override
-    public int getMaxProgress() {
-        return 0; // TODO can we extract progress information from the sub process?
-    }
-
-    @Override
-    public void cancel() {
-        if (task != null) {
-            try {
-                task.get();
-            } catch (InterruptedException | ExecutionException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-}
+    }}

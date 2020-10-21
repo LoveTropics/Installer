@@ -18,7 +18,7 @@ import com.lovetropics.installer.ui.pane.TitlePane;
 
 public class InstallerGui extends JFrame {
 
-    public static InstallerGui create(InstallProcess task) {
+    public static InstallerGui create(InstallProcess<?> task) {
         try {
             // Try to load our synth look and feel from XML
             SynthLookAndFeel laf = new SynthLookAndFeel();
@@ -39,9 +39,10 @@ public class InstallerGui extends JFrame {
             try {
                 gui.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
                 // TODO choose a different size?
-                gui.setSize(800, 800);
+                gui.setSize(600, 400);
                 // Centers the window on the monitor
                 gui.setLocationRelativeTo(null);
+//                gui.setResizable(true);
                 // Remove OS window decorations
                 gui.setUndecorated(true);
                 // Show the window
@@ -52,14 +53,16 @@ public class InstallerGui extends JFrame {
         });
         return gui;
     }
+    
+    private final ContentPane content;
 
-    public InstallerGui(InstallProcess task) {
+    public InstallerGui(InstallProcess<?> task) {
         getContentPane().setLayout(new BorderLayout());
 
         getContentPane().add(new TitlePane(this), BorderLayout.NORTH);
         // You might think SOUTH would make more sense, but this squishes the entire pane into the bottom half of the window
         // CENTER gets the behavior we want (thin title pane at the top, the rest content)
-        final ContentPane content = new ContentPane(task::run);
+        content = new ContentPane(this, task::run);
         getContentPane().add(content, BorderLayout.CENTER);
         
         addWindowListener(new WindowAdapter() {
@@ -85,5 +88,10 @@ public class InstallerGui extends JFrame {
                     .thenRun(() -> System.exit(0));
             }
         });
+    }
+    
+    public InstallerGui bind(UIElement element, UIConfig config) {
+        content.bind(element, config);
+        return this;
     }
 }

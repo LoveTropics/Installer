@@ -4,9 +4,9 @@ import java.util.concurrent.Future;
 
 import com.lovetropics.installer.ProgressCallback;
 
-public interface InstallStep {
+public interface InstallStep<T, R> {
 
-    Future<Void> start(ProgressCallback callback);
+    Future<R> start(T in, ProgressCallback callback);
 
     String getName();
 

@@ -29,6 +29,7 @@ public class ProgressPanel extends JPanel implements ProgressCallback {
     public ProgressPanel() {
         setLayout(new GridLayout(0, 1, 0, 0));
         JLabel def = new JLabel("Ready!", SwingConstants.CENTER);
+        def.setVerticalAlignment(SwingConstants.TOP);
         add(def);
     }
 
@@ -45,7 +46,9 @@ public class ProgressPanel extends JPanel implements ProgressCallback {
                 }
             }
             System.out.println(text);
-            add(new JLabel(text.toString(), SwingConstants.CENTER));
+            JLabel lab = new JLabel(text.toString(), SwingConstants.CENTER);
+            lab.setVerticalAlignment(SwingConstants.TOP);
+            add(lab);
         }
         System.out.println();
         revalidate();
