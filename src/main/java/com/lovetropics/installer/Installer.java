@@ -3,6 +3,7 @@ package com.lovetropics.installer;
 import java.io.File;
 
 import com.lovetropics.installer.config.InstallerConfig;
+import com.lovetropics.installer.steps.CopyModpack;
 import com.lovetropics.installer.steps.ForgeInstallerStep;
 import com.lovetropics.installer.steps.LauncherStep;
 import com.lovetropics.installer.steps.RunLauncherStep;
@@ -25,6 +26,7 @@ public class Installer {
         InstallProcess<?> process = InstallProcess.create()
                 .then(new ForgeInstallerStep())
                 .then(new LauncherStep(config.profileName, gameDir))
+                .then(new CopyModpack(config.modpackZip, gameDir))
                 .then(new RunLauncherStep());/*
                 .then(new InstallStep<Void, Void>() {
 

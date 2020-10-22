@@ -46,10 +46,10 @@ repositories {
 }
 
 dependencies {
-    implementation 'com.miglayout:miglayout-swing:5.2'
-	implementation 'com.jidesoft:jide-oss:3.6.18'
-    implementation "com.beust:jcommander:1.72"
+    //implementation 'com.miglayout:miglayout-swing:5.2'
+    implementation 'com.beust:jcommander:1.72'
     implementation 'com.google.code.gson:gson:2.8.6'
+    implementation 'net.lingala.zip4j:zip4j:2.6.4'
 
     compileOnly 'net.minecraftforge:forge:1.15.2-31.2.45:installer'
 }

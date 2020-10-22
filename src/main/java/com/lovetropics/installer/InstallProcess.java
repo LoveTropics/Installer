@@ -32,6 +32,7 @@ public class InstallProcess<T> {
             try {
                 currentStep = steps.remove();
                 callback.push(currentStep.getName(), currentStep.getMaxProgress());
+                Thread.sleep(500); // TODO REMOVE THIS
                 result = currentStep.start(result, callback).get();
                 callback.pop();
             } catch (InterruptedException | ExecutionException e) {
