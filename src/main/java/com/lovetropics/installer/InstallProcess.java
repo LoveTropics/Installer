@@ -26,7 +26,7 @@ public class InstallProcess<T> {
     }
 
     @SuppressWarnings("unchecked")
-    public void run(ProgressCallback callback) {
+    public T run(ProgressCallback callback) {
         Object result = null;
         while (!canceled && !steps.isEmpty()) {
             try {
@@ -42,6 +42,7 @@ public class InstallProcess<T> {
             }
         }
         steps.clear();
+        return (T) result;
     }
 
     public void cancel() {

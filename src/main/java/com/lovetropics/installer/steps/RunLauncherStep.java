@@ -6,7 +6,7 @@ import java.util.concurrent.Future;
 import com.lovetropics.installer.ProgressCallback;
 import com.lovetropics.installer.util.MinecraftInstallationUtils;
 
-public class RunLauncherStep extends SingleTaskStep<Void, Process> {
+public class RunLauncherStep extends SingleTaskStep<Void, String> {
 
     @Override
     public String getName() {
@@ -14,7 +14,9 @@ public class RunLauncherStep extends SingleTaskStep<Void, Process> {
     }
 
     @Override
-    protected Future<Process> startTask(Void in, ProgressCallback callback) {
-        return CompletableFuture.supplyAsync(MinecraftInstallationUtils::runLauncher);
+    protected Future<String> startTask(Void in, ProgressCallback callback) {
+        return CompletableFuture.supplyAsync(MinecraftInstallationUtils::runLauncher)
+                .thenApply($ -> "Click \"Done!\" and then \"PLAY\" on the Minecraft Launcher")
+                .exceptionally($ -> "Open the Minecraft Launcher and press \"PLAY\"");
     }
 }

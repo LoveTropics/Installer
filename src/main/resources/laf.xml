@@ -12,7 +12,7 @@
 	<style id="basicStyle">
 		<font idref="roboto16" />
 		<state>
-			<color value="#242c5a" type="BACKGROUND" />
+			<color value="#001427" type="BACKGROUND" />
 			<color value="WHITE" type="FOREGROUND" />
 		</state>
 	</style>
@@ -30,12 +30,12 @@
 		<state>
 			<imagePainter method="buttonBackground"
 				path="/times-solid.png" sourceInsets="0 0 0 0" />
-			<color type="BACKGROUND" value="#242C5A" />
+			<color type="BACKGROUND" value="#001427" />
 		</state>
 		<state value="MOUSE_OVER">
 			<imagePainter method="buttonBackground"
 				path="/times-solid.png" sourceInsets="0 0 0 0" />
-			<color type="BACKGROUND" value="#2F52A4" />
+			<color type="BACKGROUND" value="#242C5A" />
 		</state>
 	</style>
 	<style id="textField">

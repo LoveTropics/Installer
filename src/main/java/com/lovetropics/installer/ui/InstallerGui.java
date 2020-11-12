@@ -18,7 +18,7 @@ import com.lovetropics.installer.ui.pane.TitlePane;
 
 public class InstallerGui extends JFrame {
 
-    public static InstallerGui create(InstallProcess<?> task) {
+    public static InstallerGui create(InstallProcess<String> task) {
         try {
             // Try to load our synth look and feel from XML
             SynthLookAndFeel laf = new SynthLookAndFeel();
@@ -56,7 +56,7 @@ public class InstallerGui extends JFrame {
     
     private final ContentPane content;
 
-    public InstallerGui(InstallProcess<?> task) {
+    public InstallerGui(InstallProcess<String> task) {
         getContentPane().setLayout(new BorderLayout());
 
         getContentPane().add(new TitlePane(this), BorderLayout.NORTH);

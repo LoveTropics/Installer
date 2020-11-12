@@ -23,7 +23,7 @@ public class Installer {
             }
         };
 
-        InstallProcess<?> process = InstallProcess.create()
+        InstallProcess<String> process = InstallProcess.create()
                 .then(new ForgeInstallerStep())
                 .then(new LauncherStep(config.profileName, gameDir))
                 .then(new CopyModpack(config.modpackZip, gameDir))

@@ -3,7 +3,7 @@ package com.lovetropics.installer.ui.pane;
 import java.util.EnumMap;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
-import java.util.function.Consumer;
+import java.util.function.Function;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -31,7 +31,7 @@ public class ContentPane extends JPanel {
     
     private final EnumMap<UIElement, JTextComponent> configElements = new EnumMap<>(UIElement.class);
 
-    public ContentPane(JFrame frame, Consumer<ProgressCallback> task) {
+    public ContentPane(JFrame frame, Function<ProgressCallback, String> task) {
         this.root = frame;
 
         setBorder(new EmptyBorder(0, 20, 20, 20));
@@ -64,22 +64,11 @@ public class ContentPane extends JPanel {
 
         btnInstall.addActionListener(e -> {
             if (future == null) {
-                future = CompletableFuture.runAsync(() -> task.accept(progress))
-                    .exceptionally(t -> {
-                        t.printStackTrace();
-                        btnInstall.setText("Error!");
-                        progress.pop();
-                        Throwable root = t;
-                        while (t.getCause() != null) {
-                            root = t.getCause();
-                        }
-                        progress.push(root.toString());
-                        return null;
-                    })
-                    .thenRun(() -> {
+                future = CompletableFuture.supplyAsync(() -> task.apply(progress))
+                    .thenAccept(msg -> {
                         btnInstall.setText("Done!");
                         progress.push("Installation complete.");
-                        progress.push("Click \"Done!\" and then \"PLAY\" on the Minecraft Launcher");
+                        progress.push(msg);
                         try {
                             Thread.sleep(2000);
                         } catch (InterruptedException e1) {
@@ -87,6 +76,17 @@ public class ContentPane extends JPanel {
                         }
                         root.toFront();
                         root.repaint();
+                    })
+                    .exceptionally(t -> {
+                        t.printStackTrace();
+                        btnInstall.setText("Error!");
+                        progress.pop();
+                        Throwable root = t;
+                        while (root.getCause() != null) {
+                            root = root.getCause();
+                        }
+                        progress.push(root.toString());
+                        return null;
                     });
                 btnInstall.setText("Installing...");
             } else if (future.isDone()) {

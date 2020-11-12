@@ -15,7 +15,7 @@ apply plugin: 'java'
 apply plugin: 'eclipse'
 apply plugin: 'idea'
 
-archivesBaseName = "LTInstaller"
+archivesBaseName = "LoveTropics"
 group = 'com.lovetropics.installer'
 description = "Installer for LoveTropics modpacks"
 sourceCompatibility = 1.8
