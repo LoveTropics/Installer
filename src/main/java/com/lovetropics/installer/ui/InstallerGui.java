@@ -15,6 +15,7 @@ import com.lovetropics.installer.InstallProcess;
 import com.lovetropics.installer.Installer;
 import com.lovetropics.installer.ui.pane.ContentPane;
 import com.lovetropics.installer.ui.pane.TitlePane;
+import java.awt.Toolkit;
 
 public class InstallerGui extends JFrame {
 
@@ -45,6 +46,7 @@ public class InstallerGui extends JFrame {
 //                gui.setResizable(true);
                 // Remove OS window decorations
                 gui.setUndecorated(true);
+                gui.setIconImage(Toolkit.getDefaultToolkit().getImage(InstallerGui.class.getResource("/icon-32x.png")));
                 // Show the window
                 gui.setVisible(true);
             } catch (Exception e) {
