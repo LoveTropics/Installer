@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 
 public class MinecraftInstallationUtils {
 
@@ -72,14 +73,25 @@ public class MinecraftInstallationUtils {
         }
     }
 
-    private static final String WINDOWS_LAUNCHER_LOC = "C:\\ProgramData\\Microsoft\\Windows\\Start Menu\\Programs\\Minecraft Launcher\\Minecraft Launcher.lnk";
+    private static final String[] WINDOWS_LAUNCHER_LOCS = {
+            "\"C:\\ProgramData\\Microsoft\\Windows\\Start Menu\\Programs\\Minecraft Launcher\\Minecraft Launcher.lnk\"",
+            "\"C:\\ProgramData\\Microsoft\\Windows\\Start Menu\\Programs\\Minecraft\\Minecraft.lnk\"",
+            "\"C:\\Program Files (x86)\\Minecraft Launcher\\MinecraftLauncher.exe\"",
+    };
 
-    public static Process runLauncher() {
+    public static boolean runLauncher() {
         switch (getOS()) {
             case WINDOWS:
-                return OS.WINDOWS.exec(WINDOWS_LAUNCHER_LOC);
+                for (String cmd : WINDOWS_LAUNCHER_LOCS) {
+                    try {
+                        if (!OS.WINDOWS.exec(cmd).waitFor(100, TimeUnit.MILLISECONDS)) {
+                            return true;
+                        }
+                    } catch (InterruptedException e) {}
+                }
+                return false;
             default:
-                throw new UnsupportedOperationException("Only windows support for now");
+                return false;
         }
     }
 }

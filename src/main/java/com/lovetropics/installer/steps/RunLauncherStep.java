@@ -16,7 +16,8 @@ public class RunLauncherStep extends SingleTaskStep<Void, String> {
     @Override
     protected Future<String> startTask(Void in, ProgressCallback callback) {
         return CompletableFuture.supplyAsync(MinecraftInstallationUtils::runLauncher)
-                .thenApply($ -> "Click \"Done!\" and then \"PLAY\" on the Minecraft Launcher")
-                .exceptionally($ -> "Open the Minecraft Launcher and press \"PLAY\"");
+                .thenApply(success -> success ?
+                        "Click \"Done!\" and then \"PLAY\" on the Minecraft Launcher" :
+                        "Open the Minecraft Launcher and press \"PLAY\"");
     }
 }
