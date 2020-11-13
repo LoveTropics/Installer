@@ -15,7 +15,7 @@ public class Installer {
 
     public static void run(InstallerConfig config) {
 
-        final UIConfig gameDir = new UIConfig("LoveTropics2020") {
+        final UIConfig gameDir = new UIConfig(System.getProperty("user.home")) {
 
             @Override
             public synchronized String get() {
