@@ -1,13 +1,16 @@
 package com.lovetropics.installer.ui.pane;
 
+import java.io.File;
 import java.util.EnumMap;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
 import java.util.function.Function;
 
 import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
@@ -20,6 +23,7 @@ import com.lovetropics.installer.ui.UIConfig;
 import com.lovetropics.installer.ui.UIElement;
 import com.lovetropics.installer.ui.component.ProgressPanel;
 import com.lovetropics.installer.ui.repack.darrylbu.ShrinkIcon;
+import com.lovetropics.installer.ui.util.BrowseListener;
 import com.lovetropics.installer.ui.util.SimpleDocumentListener;
 
 public class ContentPane extends JPanel {
@@ -39,7 +43,7 @@ public class ContentPane extends JPanel {
         setLayout(null);
         
         JTextField gameDir = new JTextField();
-        gameDir.setBounds(175, 200, 400, 20);
+        gameDir.setBounds(175, 162, 405, 20);
         configElements.put(UIElement.GAME_DIR, gameDir);
         add(gameDir);
 
@@ -49,7 +53,7 @@ public class ContentPane extends JPanel {
         add(btnInstall);
 
         JLabel logo = new JLabel("");
-        logo.setBounds(200, 20, 200, 150);
+        logo.setBounds(200, 0, 200, 150);
         logo.setIcon(new ShrinkIcon(Installer.class.getResource("/logo.png")));
         add(logo);
         
@@ -59,11 +63,28 @@ public class ContentPane extends JPanel {
         
         JLabel lblNewLabel = new JLabel("Installation Directory:");
         lblNewLabel.setHorizontalAlignment(SwingConstants.RIGHT);
-        lblNewLabel.setBounds(20, 200, 150, 20);
+        lblNewLabel.setBounds(20, 162, 150, 20);
         add(lblNewLabel);
+        
+        JButton btnBrowse = new JButton("Browse");
+        btnBrowse.setBounds(506, 193, 74, 30);
+        add(btnBrowse);
+        btnBrowse.addMouseListener(new BrowseListener(this, true, gameDir));
 
         btnInstall.addActionListener(e -> {
             if (future == null) {
+                File installDir = new File(gameDir.getText());
+                if (installDir.exists()) {
+                    if (!installDir.isDirectory()) {
+                        JOptionPane.showMessageDialog(this, "Install target must be a folder!", "Install Error", JOptionPane.ERROR_MESSAGE);
+                        return;
+                    } else if (installDir.list().length > 0) {
+                        int res = JOptionPane.showConfirmDialog(this, "Install target is not empty, continue?", "Install Warning", JOptionPane.WARNING_MESSAGE);
+                        if (res == JOptionPane.CANCEL_OPTION) {
+                            return;
+                        }
+                    }
+                }
                 future = CompletableFuture.supplyAsync(() -> task.apply(progress))
                     .thenAccept(msg -> {
                         btnInstall.setText("Done!");

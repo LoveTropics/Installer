@@ -13,6 +13,7 @@
 		<font idref="roboto16" />
 		<state>
 			<color value="#001427" type="BACKGROUND" />
+			
 			<color value="WHITE" type="FOREGROUND" />
 		</state>
 	</style>
@@ -22,6 +23,9 @@
 		<state>
 			<color type="TEXT_FOREGROUND" value="BLACK" />
 			<color type="BACKGROUND" value="#F88379" />
+		</state>
+		<state value="PRESSED">
+			<color type="BACKGROUND" value="#bb4e48" />
 		</state>
 	</style>
 	<style id="closeButton">
@@ -45,6 +49,7 @@
 		<state>
 			<color type="BACKGROUND" value="WHITE" />
 			<color type="TEXT_FOREGROUND" value="BLACK" />
+			<color type="TEXT_BACKGROUND" value="#3ba2c4" />			
 		</state>
 	</style>
 	<bind style="basicStyle" type="region" key=".*" />
