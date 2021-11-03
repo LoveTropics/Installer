@@ -1,16 +1,19 @@
 package com.lovetropics.installer.steps;
 
 import java.io.File;
+import java.net.URISyntaxException;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
 
 import com.lovetropics.installer.ProgressCallback;
 import com.lovetropics.installer.util.MinecraftInstallationUtils;
 
+import net.minecraftforge.installer.SimpleInstaller;
 import net.minecraftforge.installer.actions.Action;
 import net.minecraftforge.installer.actions.ActionCanceledException;
 import net.minecraftforge.installer.actions.Actions;
 import net.minecraftforge.installer.json.Install;
+import net.minecraftforge.installer.json.InstallV1;
 import net.minecraftforge.installer.json.Util;
 
 public class ForgeInstallerStep extends SingleTaskStep<Void, Install> {
@@ -77,13 +80,14 @@ public class ForgeInstallerStep extends SingleTaskStep<Void, Install> {
         return CompletableFuture.supplyAsync(() -> {
             try {
                 System.out.println(new File("").getAbsolutePath());
-                Install profile = Util.loadInstallProfile();
+                InstallV1 profile = Util.loadInstallProfile();
                 Action action = Actions.CLIENT.getAction(profile, new ForgeProgressCallbackAdapter(callback));
-                if (!action.run(MinecraftInstallationUtils.getMCDir(), $ -> true)) {
+                File installer = new File(SimpleInstaller.class.getProtectionDomain().getCodeSource().getLocation().toURI());
+                if (!action.run(MinecraftInstallationUtils.getMCDir(), $ -> true, installer)) {
                     throw new RuntimeException("Failed to install forge");
                 }
                 return profile;
-            } catch (ActionCanceledException e) {
+            } catch (ActionCanceledException | URISyntaxException e) {
                 e.printStackTrace();
                 throw new RuntimeException(e);
             } finally {

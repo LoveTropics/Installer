@@ -2,11 +2,13 @@ package com.lovetropics.installer;
 
 import java.io.File;
 import java.io.FileReader;
+import java.io.PrintStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Objects;
 
@@ -28,6 +30,9 @@ public class LaunchWrapper {
     }
 
     public static void main(String[] argv) throws Exception {
+        PrintStream out = new PrintStream("ltinstaller.log");
+        System.setOut(out);
+        System.setErr(out);
         Arguments args = new Arguments();
         JCommander.newBuilder().addObject(args).build().parse(argv);
 
@@ -50,7 +55,7 @@ public class LaunchWrapper {
         }
 
         String classpath = System.getProperty("java.class.path");
-        classpath += ";" + config.forgeInstallerPath;
+        classpath += ";" + Paths.get(config.forgeInstallerPath).toAbsolutePath();
 
         System.out.println("Loading installer with modified classpath: " + classpath);
         // Create a new classloader with the appended classpath by splitting the files apart and converting to URLs

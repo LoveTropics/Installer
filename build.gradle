@@ -51,5 +51,5 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.8.6'
     implementation 'net.lingala.zip4j:zip4j:2.6.4'
 
-    compileOnly 'net.minecraftforge:forge:1.15.2-31.2.45:installer'
+    compileOnly 'net.minecraftforge:forge:1.16.5-36.2.8:installer'
 }
