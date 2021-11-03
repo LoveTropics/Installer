@@ -33,14 +33,17 @@ public class LauncherStep extends SingleTaskStep<Install, Void> {
     public Future<Void> startTask(Install profile, ProgressCallback callback) {
         return CompletableFuture.supplyAsync(() -> {
             Path mcDir = MinecraftInstallationUtils.getMCDir().toPath();
-            Path launcherProfiles = mcDir.resolve("launcher_profiles.json");
-            injectProfile(profile, launcherProfiles);
-            return null;
+            if (injectProfile(profile,  mcDir.resolve("launcher_profiles.json")) ||
+                injectProfile(profile, mcDir.resolve("launcher_profiles_microsoft_store.json"))) {
+                return null;
+            }
+            throw new IllegalStateException("No vanilla launcher installation found!");
         });
     }
 
     // Again borrowed from forge installer <3
-    private void injectProfile(Install profile, Path target) {
+    private boolean injectProfile(Install profile, Path target) {
+        if (!Files.exists(target)) return false;
         try {
             JsonObject json = null;
             try (InputStream stream = Files.newInputStream(target)) {
@@ -71,6 +74,8 @@ public class LauncherStep extends SingleTaskStep<Install, Void> {
             // _profile.addProperty("icon", icon);
             String jstring = new GsonBuilder().setPrettyPrinting().create().toJson(json);
             Files.write(target, jstring.getBytes(StandardCharsets.UTF_8));
+            
+            return true;
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
