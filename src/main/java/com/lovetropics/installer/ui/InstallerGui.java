@@ -46,7 +46,7 @@ public class InstallerGui extends JFrame {
 //                gui.setResizable(true);
                 // Remove OS window decorations
                 gui.setUndecorated(true);
-                gui.setIconImage(Toolkit.getDefaultToolkit().getImage(InstallerGui.class.getResource("/icon-32x.png")));
+                gui.setIconImage(Toolkit.getDefaultToolkit().getImage(InstallerGui.class.getResource("/logo32.png")));
                 // Show the window
                 gui.setVisible(true);
             } catch (Exception e) {
