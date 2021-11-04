@@ -1,5 +1,6 @@
 package com.lovetropics.installer.steps;
 
+import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -7,13 +8,17 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Instant;
+import java.util.Base64;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
 import java.util.function.Supplier;
 
+import org.apache.commons.io.IOUtils;
+
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.lovetropics.installer.Installer;
 import com.lovetropics.installer.ProgressCallback;
 import com.lovetropics.installer.util.MinecraftInstallationUtils;
 
@@ -69,9 +74,10 @@ public class LauncherStep extends SingleTaskStep<Install, Void> {
             _profile.addProperty("lastUsed", Instant.now().toString()); // Set this as the most recently used profile so
                                                                         // that it's selected by default.
             _profile.addProperty("lastVersionId", profile.getVersion());
-            // String icon = profile.getIcon();
-            // if (icon != null)
-            // _profile.addProperty("icon", icon);
+            try (InputStream is = Installer.class.getResourceAsStream("/logo128.png")) {
+                String base64 = new String(Base64.getEncoder().encode(IOUtils.toByteArray(is)));
+                _profile.addProperty("icon", "data:image/png;base64," + base64);
+            }
             String jstring = new GsonBuilder().setPrettyPrinting().create().toJson(json);
             Files.write(target, jstring.getBytes(StandardCharsets.UTF_8));
             
