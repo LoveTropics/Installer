@@ -4,6 +4,8 @@ import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.lang.management.ManagementFactory;
+import java.lang.management.OperatingSystemMXBean;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -12,6 +14,14 @@ import java.util.Base64;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
 import java.util.function.Supplier;
+
+import javax.management.AttributeNotFoundException;
+import javax.management.InstanceNotFoundException;
+import javax.management.MBeanException;
+import javax.management.MBeanServer;
+import javax.management.MalformedObjectNameException;
+import javax.management.ObjectName;
+import javax.management.ReflectionException;
 
 import org.apache.commons.io.IOUtils;
 
@@ -71,9 +81,22 @@ public class LauncherStep extends SingleTaskStep<Install, Void> {
             _profile.addProperty("name", profileName);
             _profile.addProperty("type", "custom");
             _profile.addProperty("gameDir", gameDir.get());
-            _profile.addProperty("lastUsed", Instant.now().toString()); // Set this as the most recently used profile so
-                                                                        // that it's selected by default.
+            _profile.addProperty("lastUsed", Instant.now().toString()); // Set this as the most recently used profile so that it's selected by default.
             _profile.addProperty("lastVersionId", profile.getVersion());
+            MBeanServer mBeanServer = ManagementFactory.getPlatformMBeanServer();
+            try {
+                // Dark OS level magics
+                Object attribute = mBeanServer.getAttribute(new ObjectName("java.lang","type","OperatingSystem"), "TotalPhysicalMemorySize");
+                long bytes = Long.parseLong(attribute.toString());
+                // Convert bytes to MB
+                long megs = bytes >> 20;
+                // Between 2 and 4 GB
+                int allocate = (int) Math.max(Math.min(megs / 3D, 4 << 10), 2 << 10);
+                String args = String.format("-Xmx%dM -XX:+UnlockExperimentalVMOptions -XX:+UseG1GC -XX:G1NewSizePercent=20 -XX:G1ReservePercent=20 -XX:MaxGCPauseMillis=50 -XX:G1HeapRegionSize=32M", allocate);
+                _profile.addProperty("javaArgs", args);
+            } catch (InstanceNotFoundException | AttributeNotFoundException | MalformedObjectNameException | ReflectionException | MBeanException e) {
+                e.printStackTrace();
+            }
             try (InputStream is = Installer.class.getResourceAsStream("/logo128.png")) {
                 String base64 = new String(Base64.getEncoder().encode(IOUtils.toByteArray(is)));
                 _profile.addProperty("icon", "data:image/png;base64," + base64);
