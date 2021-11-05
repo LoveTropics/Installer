@@ -66,11 +66,11 @@ public class LauncherStep extends SingleTaskStep<Install, Void> {
             JsonObject _profile = _profiles.getAsJsonObject(profileName);
             if (_profile == null) {
                 _profile = new JsonObject();
-                _profile.addProperty("name", profileName);
-                _profile.addProperty("type", "custom");
-                _profile.addProperty("gameDir", gameDir.get());
                 _profiles.add(profileName, _profile);
             }
+            _profile.addProperty("name", profileName);
+            _profile.addProperty("type", "custom");
+            _profile.addProperty("gameDir", gameDir.get());
             _profile.addProperty("lastUsed", Instant.now().toString()); // Set this as the most recently used profile so
                                                                         // that it's selected by default.
             _profile.addProperty("lastVersionId", profile.getVersion());

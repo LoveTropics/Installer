@@ -74,7 +74,7 @@ public class ForgeInstallerStep extends SingleTaskStep<Void, Install> {
             hasSubMessage = true;
         }
     }
-    
+
     @Override
     public Future<Install> startTask(Void in, ProgressCallback callback) {
         return CompletableFuture.supplyAsync(() -> {
@@ -99,4 +99,5 @@ public class ForgeInstallerStep extends SingleTaskStep<Void, Install> {
     @Override
     public String getName() {
         return "Installing Forge";
-    }}
+    }
+}
