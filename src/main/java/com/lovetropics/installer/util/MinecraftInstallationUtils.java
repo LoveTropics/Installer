@@ -65,7 +65,7 @@ public class MinecraftInstallationUtils {
             case WINDOWS:
                 return new File(System.getenv("APPDATA"), mcDir);
             case MAC:
-                new File(new File(new File(userHomeDir, "Library"), "Application Support"), "minecraft");
+                return new File(new File(new File(userHomeDir, "Library"), "Application Support"), "minecraft");
             case LINUX:
                 return new File(userHomeDir, mcDir);
             default:
