@@ -46,6 +46,7 @@ public class InstallerGui extends JFrame {
 //                gui.setResizable(true);
                 // Remove OS window decorations
                 gui.setUndecorated(true);
+                gui.setTitle("Love Tropics Installer");
                 gui.setIconImage(Toolkit.getDefaultToolkit().getImage(InstallerGui.class.getResource("/icon32.png")));
                 // Show the window
                 gui.setVisible(true);

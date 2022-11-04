@@ -1,11 +1,9 @@
 package com.lovetropics.installer.steps;
 
-import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.management.ManagementFactory;
-import java.lang.management.OperatingSystemMXBean;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -62,7 +60,7 @@ public class LauncherStep extends SingleTaskStep<Install, Void> {
         try {
             JsonObject json = null;
             try (InputStream stream = Files.newInputStream(target)) {
-                json = new JsonParser().parse(new InputStreamReader(stream, StandardCharsets.UTF_8)).getAsJsonObject();
+                json = JsonParser.parseReader(new InputStreamReader(stream, StandardCharsets.UTF_8)).getAsJsonObject();
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }

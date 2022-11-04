@@ -16,7 +16,7 @@ public class Installer {
     public static void run(InstallerConfig config) {
 
         // TODO this path needs to be configurable via installer.json
-        final UIConfig gameDir = new UIConfig(System.getProperty("user.home") + File.separator + "LoveTropics2021") {
+        final UIConfig gameDir = new UIConfig(System.getProperty("user.home") + File.separator + "LoveTropics2022") {
 
             @Override
             public synchronized String get() {

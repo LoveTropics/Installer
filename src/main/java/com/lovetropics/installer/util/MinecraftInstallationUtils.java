@@ -77,6 +77,7 @@ public class MinecraftInstallationUtils {
             "\"C:\\ProgramData\\Microsoft\\Windows\\Start Menu\\Programs\\Minecraft Launcher\\Minecraft Launcher.lnk\"",
             "\"C:\\ProgramData\\Microsoft\\Windows\\Start Menu\\Programs\\Minecraft\\Minecraft.lnk\"",
             "\"C:\\Program Files (x86)\\Minecraft Launcher\\MinecraftLauncher.exe\"",
+            "\"" + System.getProperty("user.home", ".") + "\\curseforge\\minecraft\\Install\\minecraft.exe\""
 //            "start ms-xbl-6af6e7cc:"
     };
 

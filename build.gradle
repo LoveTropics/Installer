@@ -10,7 +10,6 @@ buildscript {
 plugins {
     id 'com.github.johnrengelman.shadow' version '5.2.0'
 }
-apply plugin: 'maven'
 apply plugin: 'java'
 apply plugin: 'eclipse'
 apply plugin: 'idea'
@@ -18,8 +17,8 @@ apply plugin: 'idea'
 archivesBaseName = "LoveTropics"
 group = 'com.lovetropics.installer'
 description = "Installer for LoveTropics modpacks"
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
+sourceCompatibility = 17
+targetCompatibility = 17
 
 import org.ajoberstar.grgit.Grgit
 def repo = Grgit.open(project.file('.'))
