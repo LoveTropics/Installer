@@ -31,8 +31,9 @@ import com.lovetropics.installer.ProgressCallback;
 import com.lovetropics.installer.util.MinecraftInstallationUtils;
 
 import net.minecraftforge.installer.json.Install;
+import net.minecraftforge.installer.json.InstallV1;
 
-public class LauncherStep extends SingleTaskStep<Install, Void> {
+public class LauncherStep extends SingleTaskStep<InstallV1, Void> {
 
     private final String profileName;
     private final Supplier<String> gameDir;
@@ -43,7 +44,7 @@ public class LauncherStep extends SingleTaskStep<Install, Void> {
     }
 
     @Override
-    public Future<Void> startTask(Install profile, ProgressCallback callback) {
+    public Future<Void> startTask(InstallV1 profile, ProgressCallback callback) {
         return CompletableFuture.supplyAsync(() -> {
             Path mcDir = MinecraftInstallationUtils.getMCDir().toPath();
             if (injectProfile(profile,  mcDir.resolve("launcher_profiles.json")) ||
@@ -55,7 +56,7 @@ public class LauncherStep extends SingleTaskStep<Install, Void> {
     }
 
     // Again borrowed from forge installer <3
-    private boolean injectProfile(Install profile, Path target) {
+    private boolean injectProfile(InstallV1 profile, Path target) {
         if (!Files.exists(target)) return false;
         try {
             JsonObject json = null;

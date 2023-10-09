@@ -15,8 +15,7 @@ public class Installer {
 
     public static void run(InstallerConfig config) {
 
-        // TODO this path needs to be configurable via installer.json
-        final UIConfig gameDir = new UIConfig(System.getProperty("user.home") + File.separator + "LoveTropics2022") {
+        final UIConfig gameDir = new UIConfig(System.getProperty("user.home") + File.separator + config.gameDir) {
 
             @Override
             public synchronized String get() {
@@ -25,7 +24,7 @@ public class Installer {
         };
 
         InstallProcess<String> process = InstallProcess.create()
-                .then(new ForgeInstallerStep())
+                .then(new ForgeInstallerStep(config))
                 .then(new LauncherStep(config.profileName, gameDir))
                 .then(new CopyModpack(config.modpackZip, gameDir))
                 .then(new RunLauncherStep());/*
@@ -77,7 +76,7 @@ public class Installer {
             }
         });
 */
-        InstallerGui.create(process)
+        InstallerGui.create(config, process)
             .bind(UIElement.GAME_DIR, gameDir);
     }
 }

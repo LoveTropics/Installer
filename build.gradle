@@ -40,7 +40,7 @@ jar.manifest {
 repositories {
     mavenCentral()
     maven {
-        url 'https://files.minecraftforge.net/maven/'
+        url 'https://maven.neoforged.net/releases'
     }
 }
 
@@ -51,5 +51,6 @@ dependencies {
     implementation 'net.lingala.zip4j:zip4j:2.6.4'
     implementation 'commons-io:commons-io:2.11.0'
 
-    compileOnly 'net.minecraftforge:forge:1.16.5-36.2.8:installer'
+    compileOnly fileTree('libs') { include '*.jar' }
+
 }

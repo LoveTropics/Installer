@@ -9,4 +9,6 @@ public class InstallerConfig {
     public String profileName = "LoveTropics2020";
 
     public String gameDir = "LoveTropics2020";
+
+    public String serverIp;
 }

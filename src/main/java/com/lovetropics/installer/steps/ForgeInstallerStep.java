@@ -1,22 +1,34 @@
 package com.lovetropics.installer.steps;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.net.URISyntaxException;
+import java.nio.charset.StandardCharsets;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
 
+import org.apache.commons.io.FileUtils;
+
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonIOException;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.google.gson.JsonSyntaxException;
 import com.lovetropics.installer.ProgressCallback;
+import com.lovetropics.installer.config.InstallerConfig;
 import com.lovetropics.installer.util.MinecraftInstallationUtils;
 
 import net.minecraftforge.installer.SimpleInstaller;
 import net.minecraftforge.installer.actions.Action;
 import net.minecraftforge.installer.actions.ActionCanceledException;
 import net.minecraftforge.installer.actions.Actions;
-import net.minecraftforge.installer.json.Install;
 import net.minecraftforge.installer.json.InstallV1;
 import net.minecraftforge.installer.json.Util;
 
-public class ForgeInstallerStep extends SingleTaskStep<Void, Install> {
+public class ForgeInstallerStep extends SingleTaskStep<Void, InstallV1> {
 
     private static class ForgeProgressCallbackAdapter implements net.minecraftforge.installer.actions.ProgressCallback {
 
@@ -74,20 +86,40 @@ public class ForgeInstallerStep extends SingleTaskStep<Void, Install> {
             hasSubMessage = true;
         }
     }
+    
+    private final InstallerConfig config;
+
+    public ForgeInstallerStep(InstallerConfig config) {
+        this.config = config;
+    }
 
     @Override
-    public Future<Install> startTask(Void in, ProgressCallback callback) {
+    public Future<InstallV1> startTask(Void in, ProgressCallback callback) {
         return CompletableFuture.supplyAsync(() -> {
             try {
                 System.out.println(new File("").getAbsolutePath());
-                InstallV1 profile = Util.loadInstallProfile();
-                Action action = Actions.CLIENT.getAction(profile, new ForgeProgressCallbackAdapter(callback));
+                InstallV1 forgeProfile = Util.loadInstallProfile();
+                InstallV1 customProfile = new InstallV1(forgeProfile) {{
+                    this.serverJarPath = forgeProfile.getServerJarPath();
+                    this.version = this.version + "-" + config.profileName.replace(" ", "");
+                }};
+                Action action = Actions.CLIENT.getAction(customProfile, new ForgeProgressCallbackAdapter(callback));
                 File installer = new File(SimpleInstaller.class.getProtectionDomain().getCodeSource().getLocation().toURI());
-                if (!action.run(MinecraftInstallationUtils.getMCDir(), $ -> true, installer)) {
+                File mcRoot = MinecraftInstallationUtils.getMCDir();
+                if (!action.run(mcRoot, $ -> true, installer)) {
                     throw new RuntimeException("Failed to install forge");
                 }
-                return profile;
-            } catch (ActionCanceledException | URISyntaxException e) {
+                File versionJsonFile = new File(mcRoot, "versions/" + customProfile.getVersion() + "/" + customProfile.getVersion() + ".json");
+                JsonObject json = JsonParser.parseReader(new FileReader(versionJsonFile, StandardCharsets.UTF_8)).getAsJsonObject();
+                json.addProperty("id", customProfile.getVersion());
+                if (config.serverIp != null) {
+                    JsonArray args = json.getAsJsonObject("arguments").getAsJsonArray("game");
+                    args.add("--quickPlayMultiplayer");
+                    args.add(config.serverIp);
+                }
+                FileUtils.write(versionJsonFile, new Gson().toJson(json), StandardCharsets.UTF_8, false);
+                return customProfile;
+            } catch (ActionCanceledException | URISyntaxException | JsonIOException | JsonSyntaxException | IOException e) {
                 e.printStackTrace();
                 throw new RuntimeException(e);
             } finally {
