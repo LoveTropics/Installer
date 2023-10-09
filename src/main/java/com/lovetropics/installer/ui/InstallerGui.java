@@ -2,6 +2,7 @@ package com.lovetropics.installer.ui;
 
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
+import java.awt.Toolkit;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.concurrent.CompletableFuture;
@@ -13,13 +14,13 @@ import javax.swing.plaf.synth.SynthLookAndFeel;
 
 import com.lovetropics.installer.InstallProcess;
 import com.lovetropics.installer.Installer;
+import com.lovetropics.installer.config.InstallerConfig;
 import com.lovetropics.installer.ui.pane.ContentPane;
 import com.lovetropics.installer.ui.pane.TitlePane;
-import java.awt.Toolkit;
 
 public class InstallerGui extends JFrame {
 
-    public static InstallerGui create(InstallProcess<String> task) {
+    public static InstallerGui create(InstallerConfig config, InstallProcess<String> task) {
         try {
             // Try to load our synth look and feel from XML
             SynthLookAndFeel laf = new SynthLookAndFeel();
@@ -35,7 +36,7 @@ public class InstallerGui extends JFrame {
             }
         }
 
-        final InstallerGui gui = new InstallerGui(task);
+        final InstallerGui gui = new InstallerGui(config, task);
         EventQueue.invokeLater(() -> {
             try {
                 gui.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
@@ -47,7 +48,7 @@ public class InstallerGui extends JFrame {
                 // Remove OS window decorations
                 gui.setUndecorated(true);
                 gui.setTitle("Love Tropics Installer");
-                gui.setIconImage(Toolkit.getDefaultToolkit().getImage(InstallerGui.class.getResource("/icon32.png")));
+                gui.setIconImage(Toolkit.getDefaultToolkit().getImage(InstallerGui.class.getResource("/icon64.png")));
                 // Show the window
                 gui.setVisible(true);
             } catch (Exception e) {
@@ -59,13 +60,13 @@ public class InstallerGui extends JFrame {
     
     private final ContentPane content;
 
-    public InstallerGui(InstallProcess<String> task) {
+    public InstallerGui(InstallerConfig config, InstallProcess<String> task) {
         getContentPane().setLayout(new BorderLayout());
 
         getContentPane().add(new TitlePane(this), BorderLayout.NORTH);
         // You might think SOUTH would make more sense, but this squishes the entire pane into the bottom half of the window
         // CENTER gets the behavior we want (thin title pane at the top, the rest content)
-        content = new ContentPane(this, task::run);
+        content = new ContentPane(this, config, task::run);
         getContentPane().add(content, BorderLayout.CENTER);
         
         addWindowListener(new WindowAdapter() {

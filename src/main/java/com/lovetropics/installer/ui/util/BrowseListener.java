@@ -1,34 +1,37 @@
 package com.lovetropics.installer.ui.util;
 
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
 
 import javax.swing.JFileChooser;
 import javax.swing.JTextField;
 
+import com.lovetropics.installer.config.InstallerConfig;
 import com.lovetropics.installer.ui.pane.ContentPane;
 import com.lovetropics.installer.util.JSystemFileChooser;
 
-public class BrowseListener extends MouseAdapter {
+public class BrowseListener implements ActionListener {
     private ContentPane parent;
     private boolean isOpen;
     private JTextField field;
+    private InstallerConfig config;
     private JFileChooser fileChooser;
 
-    public BrowseListener(ContentPane parent, boolean isOpen, JTextField field) {
+    public BrowseListener(ContentPane parent, boolean isOpen, JTextField field, InstallerConfig config) {
         this.parent = parent;
         this.isOpen = isOpen;
         this.field = field;
+        this.config = config;
         this.fileChooser = new JSystemFileChooser();
         fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
         fileChooser.setFileHidingEnabled(false);
     }
 
     @Override
-    public void mouseClicked(MouseEvent e) {
-        File currentDir = new File(field.getText().replaceAll("[\\/]LoveTropics2020", ""));
+    public void actionPerformed(ActionEvent e) {
+        File currentDir = new File(field.getText().replaceAll("[\\/]" + this.config.gameDir, ""));
         fileChooser.setSelectedFile(currentDir);
         int returnState;
         if(isOpen) {
@@ -45,7 +48,7 @@ public class BrowseListener extends MouseAdapter {
                 path = file.getAbsolutePath();
             }
             
-            field.setText(path + File.separator + "LoveTropics2020");
+            field.setText(path + File.separator + this.config.gameDir);
         }
     }
 }

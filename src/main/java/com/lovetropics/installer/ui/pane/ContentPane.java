@@ -7,7 +7,6 @@ import java.util.concurrent.Future;
 import java.util.function.Function;
 
 import javax.swing.JButton;
-import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -19,6 +18,7 @@ import javax.swing.text.JTextComponent;
 
 import com.lovetropics.installer.Installer;
 import com.lovetropics.installer.ProgressCallback;
+import com.lovetropics.installer.config.InstallerConfig;
 import com.lovetropics.installer.ui.UIConfig;
 import com.lovetropics.installer.ui.UIElement;
 import com.lovetropics.installer.ui.component.ProgressPanel;
@@ -35,7 +35,7 @@ public class ContentPane extends JPanel {
     
     private final EnumMap<UIElement, JTextComponent> configElements = new EnumMap<>(UIElement.class);
 
-    public ContentPane(JFrame frame, Function<ProgressCallback, String> task) {
+    public ContentPane(JFrame frame, InstallerConfig config, Function<ProgressCallback, String> task) {
         this.root = frame;
 
         setBorder(new EmptyBorder(0, 20, 20, 20));
@@ -54,7 +54,7 @@ public class ContentPane extends JPanel {
 
         JLabel logo = new JLabel("");
         logo.setBounds(200, 0, 200, 150);
-        logo.setIcon(new ShrinkIcon(Installer.class.getResource("/logo.png")));
+        logo.setIcon(new ShrinkIcon(Installer.class.getResource("/logo-build.png")));
         add(logo);
         
         progress = new ProgressPanel();
@@ -69,7 +69,7 @@ public class ContentPane extends JPanel {
         JButton btnBrowse = new JButton("Browse");
         btnBrowse.setBounds(506, 193, 74, 30);
         add(btnBrowse);
-        btnBrowse.addMouseListener(new BrowseListener(this, true, gameDir));
+        btnBrowse.addActionListener(new BrowseListener(this, true, gameDir, config));
 
         btnInstall.addActionListener(e -> {
             if (future == null) {
