@@ -8,9 +8,12 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalUnit;
 import java.util.Base64;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 
 import javax.management.AttributeNotFoundException;
@@ -30,7 +33,6 @@ import com.lovetropics.installer.Installer;
 import com.lovetropics.installer.ProgressCallback;
 import com.lovetropics.installer.util.MinecraftInstallationUtils;
 
-import net.minecraftforge.installer.json.Install;
 import net.minecraftforge.installer.json.InstallV1;
 
 public class LauncherStep extends SingleTaskStep<InstallV1, Void> {
@@ -80,7 +82,7 @@ public class LauncherStep extends SingleTaskStep<InstallV1, Void> {
             _profile.addProperty("name", profileName);
             _profile.addProperty("type", "custom");
             _profile.addProperty("gameDir", gameDir.get());
-            _profile.addProperty("lastUsed", Instant.now().toString()); // Set this as the most recently used profile so that it's selected by default.
+            _profile.addProperty("lastUsed", Instant.now().plus(1L, ChronoUnit.SECONDS).toString()); // Set this as the most recently used profile so that it's selected by default.
             _profile.addProperty("lastVersionId", profile.getVersion());
             MBeanServer mBeanServer = ManagementFactory.getPlatformMBeanServer();
             try {
