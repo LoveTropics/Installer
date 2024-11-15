@@ -6,6 +6,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
+import java.util.Map.Entry;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
 
@@ -16,6 +17,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonIOException;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSyntaxException;
 import com.lovetropics.installer.ProgressCallback;
 import com.lovetropics.installer.config.InstallerConfig;
@@ -118,9 +120,10 @@ public class ForgeInstallerStep extends SingleTaskStep<Void, InstallV1> {
                 JsonObject json = JsonParser.parseReader(new FileReader(versionJsonFile, StandardCharsets.UTF_8)).getAsJsonObject();
                 json.addProperty("id", customProfile.getVersion());
                 if (config.serverIp != null) {
-                    JsonArray args = json.getAsJsonObject("arguments").getAsJsonArray("game");
-                    args.add("--quickPlayMultiplayer");
-                    args.add(config.serverIp);
+                    // Certain gson helper methods are stripped from the forge installer, leave these 3 lines as-is
+                    JsonArray args = json.getAsJsonObject("arguments").entrySet().stream().filter(e -> e.getKey().equals("game")).map(Entry::getValue).findFirst().orElse(new JsonArray()).getAsJsonArray();
+                    args.add(new JsonPrimitive("--quickPlayMultiplayer"));
+                    args.add(new JsonPrimitive(config.serverIp));
                 }
                 FileUtils.write(versionJsonFile, new Gson().toJson(json), StandardCharsets.UTF_8, false);
                 return customProfile;
