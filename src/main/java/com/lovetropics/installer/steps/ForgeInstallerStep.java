@@ -65,11 +65,6 @@ public class ForgeInstallerStep extends SingleTaskStep<Void, InstallV1> {
         }
 
         @Override
-        public void progress(double progress) {
-            callback.setProgress((int) (progress * 100));
-        }
-
-        @Override
         public void stage(String message) {
             reset();
             callback.push(sanitize(message));
@@ -84,6 +79,16 @@ public class ForgeInstallerStep extends SingleTaskStep<Void, InstallV1> {
             }
             callback.push(sanitize(message));
             hasSubMessage = true;
+        }
+
+        @Override
+        public String getCurrentStep() {
+            return "";
+        }
+
+        @Override
+        public void setCurrentStep(String arg0) {
+            
         }
     }
     
