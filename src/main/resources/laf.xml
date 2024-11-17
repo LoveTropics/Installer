@@ -12,7 +12,7 @@
 	<style id="basicStyle">
 		<font idref="roboto16" />
 		<state>
-			<color value="#006c68" type="BACKGROUND" />
+			<color value="#FFA52C" type="BACKGROUND" />
 			<color value="WHITE" type="FOREGROUND" />
 		</state>
 	</style>
@@ -21,10 +21,10 @@
 		<insets top="8" left="8" right="8" bottom="8" />
 		<state>
 			<color type="TEXT_FOREGROUND" value="BLACK" />
-			<color type="BACKGROUND" value="#ed8b26" />
+			<color type="BACKGROUND" value="#57B538" />
 		</state>
 		<state value="PRESSED">
-			<color type="BACKGROUND" value="#bb6d14" />
+			<color type="BACKGROUND" value="#31A2AC" />
 		</state>
 	</style>
 	<style id="closeButton">
@@ -33,12 +33,12 @@
 		<state>
 			<imagePainter method="buttonBackground"
 				path="/times-solid.png" sourceInsets="0 0 0 0" />
-			<color type="BACKGROUND" value="#006c68" />
+			<color type="BACKGROUND" value="#FFA52C" />
 		</state>
 		<state value="MOUSE_OVER">
 			<imagePainter method="buttonBackground"
 				path="/times-solid.png" sourceInsets="0 0 0 0" />
-			<color type="BACKGROUND" value="#ffb898" />
+			<color type="BACKGROUND" value="#CC3A4D" />
 		</state>
 	</style>
 	<style id="textField">
