@@ -98,7 +98,7 @@ public class LauncherStep extends SingleTaskStep<InstallV1, Void> {
             } catch (InstanceNotFoundException | AttributeNotFoundException | MalformedObjectNameException | ReflectionException | MBeanException e) {
                 e.printStackTrace();
             }
-            try (InputStream is = Installer.class.getResourceAsStream("/logo128.png")) {
+            try (InputStream is = Installer.class.getResourceAsStream("/icon128.png")) {
                 String base64 = new String(Base64.getEncoder().encode(IOUtils.toByteArray(is)));
                 _profile.addProperty("icon", "data:image/png;base64," + base64);
             }
