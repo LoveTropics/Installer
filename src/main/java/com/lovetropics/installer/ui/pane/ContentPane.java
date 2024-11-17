@@ -54,7 +54,7 @@ public class ContentPane extends JPanel {
 
         JLabel logo = new JLabel("");
         logo.setBounds(200, 0, 200, 150);
-        logo.setIcon(new ShrinkIcon(Installer.class.getResource("/logo-build.png")));
+        logo.setIcon(new ShrinkIcon(Installer.class.getResource("/logo.png")));
         add(logo);
         
         progress = new ProgressPanel();
