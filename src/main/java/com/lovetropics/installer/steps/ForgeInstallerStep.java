@@ -109,6 +109,7 @@ public class ForgeInstallerStep extends SingleTaskStep<Void, InstallV1> {
                 InstallV1 customProfile = new InstallV1(forgeProfile) {{
                     this.serverJarPath = forgeProfile.getServerJarPath();
                     this.version = this.version + "-" + config.profileName.replace(" ", "");
+                    this.profile = config.profileName;
                 }};
                 Action action = Actions.CLIENT.getAction(customProfile, new ForgeProgressCallbackAdapter(callback));
                 File installer = new File(SimpleInstaller.class.getProtectionDomain().getCodeSource().getLocation().toURI());
