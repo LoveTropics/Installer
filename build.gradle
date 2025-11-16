@@ -2,30 +2,22 @@ buildscript {
     repositories {
         mavenCentral()
         mavenLocal()
-        maven {
-		  	name = 'ajoberstar-backup'
-		 	url = 'https://ajoberstar.org/bintray-backup/'
-		}
-    }
-    dependencies {
-        classpath 'org.ajoberstar:gradle-git:1.7.2'
     }
 }
 plugins {
-    id 'com.github.johnrengelman.shadow' version '5.2.0'
+    id 'com.github.johnrengelman.shadow' version '8.1.1'
+    id 'org.ajoberstar.grgit' version '5.3.2'
 }
 apply plugin: 'java'
 apply plugin: 'eclipse'
 apply plugin: 'idea'
 
-archivesBaseName = "LoveTropics"
-group = 'com.lovetropics.installer'
-description = "Installer for LoveTropics modpacks"
-sourceCompatibility = 17
-targetCompatibility = 17
+group = 'org.lovetropics'
+base {
+    archivesName = 'Installer'
+}
 
-import org.ajoberstar.grgit.Grgit
-def repo = Grgit.open(project.file('.'))
+def repo = grgit.open(dir: project.file('.'))
 
 if (System.getenv('BUILD_NUMBER') != null) {
     version += ".${System.getenv('BUILD_NUMBER')}"
@@ -38,7 +30,7 @@ tasks.withType(JavaCompile) {
 }
 
 jar.manifest {
-    attributes 'Main-Class': 'com.lovetropics.installer.LaunchWrapper'
+    attributes 'Main-Class': 'org.lovetropics.installer.LaunchWrapper'
 }
 
 repositories {
