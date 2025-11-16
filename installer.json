@@ -1,4 +1,5 @@
 {
-	"forgeInstallerPath": "forge-installer.jar",
-	"profileName": "Love Tropics 2021"
+	"forgeInstallerPath": "neoforge-installer.jar",
+	"profileName": "Love Tropics 2025",
+	"gameDir": "LoveTropics2025"
 }
