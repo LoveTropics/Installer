@@ -35,10 +35,3 @@ The Installer is configured via a JSON file, which can contain the following:
 	"serverIp": "<optional, the IP of a server to autoconnect to>"
 }
 ```
-
-# JRE
-If you don't want to include an entire JRE, you can use `jlink` to build a stripped-down JRE that only contains the
-required modules:
-- Use `jdeps` to get the modules needed by the JARfiles (e.g. `jdeps installer.jar`)
-- Use `jlink` to build a JRE with those needed modules:
-  - `jlink --add-modules java.base,java.desktop,java.management,java.logging,java.sql --strip-debug --no-man-pages --no-header-files --compress=2 --output jre`
