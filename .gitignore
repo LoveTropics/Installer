@@ -20,3 +20,5 @@ hs_err_pid*
 *.project
 /.settings/
 /_temp_jre/
+
+ltinstaller.log
