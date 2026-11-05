@@ -76,13 +76,13 @@ public class InstallerGui extends JFrame {
             @Override
             public void windowClosing(WindowEvent e) {
                 if (closeTask != null) return;
-                content.setActionString("Canceling...");
+                content.setActionString("Cancelling...");
                 if (!task.running()) {
                     System.exit(0);
                 }
                 closeTask = CompletableFuture.runAsync(task::cancel)
                     .thenRun(() -> {
-                        content.getProgressCallback().push("Canceled!");
+                        content.getProgressCallback().push("Cancelled!");
                         try {
                             Thread.sleep(1000);
                         } catch (InterruptedException e1) {
