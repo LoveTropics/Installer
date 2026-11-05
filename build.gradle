@@ -47,7 +47,5 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.13.2'
     implementation 'net.lingala.zip4j:zip4j:2.11.5'
     implementation 'commons-io:commons-io:2.21.0'
-
-    compileOnly fileTree('libs') { include '*.jar' }
-
+    compileOnly 'net.neoforged:legacyinstaller:3.0.48'
 }

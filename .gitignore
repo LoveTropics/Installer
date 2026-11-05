@@ -22,3 +22,9 @@ hs_err_pid*
 /_temp_jre/
 
 ltinstaller.log
+/jre/
+/bundle.7z
+/installer.jar
+/neoforge-installer.jar
+*.zip
+*.exe
